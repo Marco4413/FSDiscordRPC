@@ -43,9 +43,9 @@ namespace FSDiscordRPC
                 },
                 Buttons = Buttons?.Select(b => new Button { Label = b.Label, Url = b.Url }).ToArray(),
                 State = State,
-                Party = new Party
+                Party = PartySize == null && PartyMax == null ? null : new Party
                 {
-                    ID = PartySize == null && PartyMax == null ? null : "party-id",
+                    ID = "party-id",
                     Size = PartySize ?? 0,
                     Max = PartyMax ?? 0
                 }
