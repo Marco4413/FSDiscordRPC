@@ -9,6 +9,8 @@ namespace FSDiscordRPC
             if (args.Length == 0)
             {
                 Console.WriteLine("You must specify a file to watch.");
+                Console.Write("Press ENTER to continue.");
+                Console.ReadLine();
                 return;
             }
 
