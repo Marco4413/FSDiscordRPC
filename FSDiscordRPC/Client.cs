@@ -6,12 +6,14 @@ namespace FSDiscordRPC
     internal class Client : IDisposable
     {
         public FileInfo ConfigFile { get; }
+        public int UpdateDelay;
         
         private DiscordRpcClient? _RPClient;
         private readonly FileSystemWatcher _Watcher;
 
-        public Client(string path)
+        public Client(string path, int updateDelay = 1000)
         {
+            UpdateDelay = updateDelay;
             ConfigFile = new FileInfo(path);
             _Watcher = new FileSystemWatcher
             {
@@ -26,9 +28,15 @@ namespace FSDiscordRPC
             };
 
             UpdatePresenceFromConfig();
-            _Watcher.Created += (_, _) => UpdatePresenceFromConfig();
-            _Watcher.Changed += (_, _) => UpdatePresenceFromConfig();
-            _Watcher.Deleted += (_, _) => UpdatePresenceFromConfig();
+            _Watcher.Created += OnUpdatePresence;
+            _Watcher.Changed += OnUpdatePresence;
+            _Watcher.Deleted += OnUpdatePresence;
+        }
+
+        private void OnUpdatePresence(object _, FileSystemEventArgs e)
+        {
+            Thread.Sleep(UpdateDelay);
+            UpdatePresenceFromConfig();
         }
 
         private void UpdatePresence(RichPresenceConfig config)
